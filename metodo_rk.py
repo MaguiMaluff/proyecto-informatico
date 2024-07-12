@@ -3,24 +3,77 @@ import math
 class Datos():
     def obtener_datos(self):    
         function_str = input("Ingrese una funcion: ")
-        x = input('x: ')
-        y = input('y: ')
-        return x , y , function_str
+        x = float(input('x: '))
+        y = float(input('y: '))
+        h = float(input('h: '))
+        range_1 = float(input('Primer valor del rango: '))
+        range_2 = float(input('Segundo valor del rango: '))
+        return x , y, h, function_str, range_2
 
-class Function():
-    def eval_funcion(self, datos):
-        x = int(datos[0])
-        y = int(datos[1])
-        function_str = datos[2]
-        context = {'x': x, 'y': y, 'math': math}
-        z = eval(function_str, {"__builtins__": None}, context)
-    
 class Metodo():
+    def __init__(self, datos):
+        self.x = datos[0]
+        self.y = datos[1]
+        self.h = datos[2]
+        self.f = datos[3]
+        self.k1 = None
+        self.k2 = None
+        self.k3 = None
+        self.k4 = None
+        self.y_sig = None
+        self.end = datos[-1]
+        self.results = None
+
+    def calculate_k1(self):
+        self.k1 = round(self.eval_funcion(self.x , self.y), 5)
+
+    def calculate_k2(self):
+        x = self.x + self.h/2
+        y = self.y + (self.h/2)*self.k1
+        self.k2 = round(self.eval_funcion(x , y), 5)
+
+    def calculate_k3(self):
+        x = self.x + self.h/2
+        y = self.y + (self.h/2)*self.k2
+        self.k3 = round(self.eval_funcion(x , y), 5)
     
+    def calculate_k4(self):
+        x = self.x + self.h/2
+        y = self.y + (self.h/2)*self.k3
+        self.k4 = round(self.eval_funcion(x , y), 5)
+    
+    def calculate_y_sig(self):
+        self.y_sig = round((self.y + 1/6*(self.k1 + 2*self.k2 + 2*self.k3 + self.k4)*self.h), 5)
 
+    def eval_funcion(self, x , y):
+        local_dict = {'x': x, 'y': y, 'math': math}
+        return round(eval(self.f, {}, local_dict), 5)
 
-if __name__ == '__main__':
-    datos = Datos()
-    datitos = datos.obtener_datos()
-    fun = Function()
-    fun.eval_funcion(datitos)
+    def reiniciar(self):
+        self.y = self.y_sig 
+        self.x += self.h
+    
+    def ejecutar(self):
+        self.calculate_k1()
+        self.calculate_k2()
+        self.calculate_k3()
+        self.calculate_k4()
+        self.calculate_y_sig()
+        self.results = self.eval_funcion(self.x, self.y)
+    
+    def print_tabla(self):
+        print('--------------------------------------------------------------------------------')
+        print('|{:^10}|{:^10}|{:^10}|{:^10}|{:^10}|{:^10}|{:^12}|'.format('x', 'y', 'k1', 'k2', 'k3', 'k4', 'f(x, y)'))
+        print('--------------------------------------------------------------------------------')
+
+    def print_resultados(self):
+        print('|{:^10.5f}|{:^10.5f}|{:^10.5f}|{:^10.5f}|{:^10.5f}|{:^10.5f}|{:^12.5f}|'.format(self.x, self.y, self.k1, self.k2, self.k3, self.k4, self.results))
+
+    def run(self):
+        while self.x + self.h <= self.end:
+            self.ejecutar()
+            self.print_resultados()
+            self.reiniciar()
+
+        if self.x == self.end:
+            print('|{:^10.5f}|{:^10.5f}|'.format(self.x, self.y))

@@ -1,4 +1,4 @@
-from metodo_rk import Function, Datos
+from metodo_rk import Metodo, Datos
 
 def main():
     print('Método de Runge Kutta de 4to orden')
@@ -8,7 +8,7 @@ def main():
     print('  - e = math.e')
     print('  - Raíz cuadrada: math.sqrt(x o y)')
     print('  - Logaritmo: math.log(x)')
-    print('  - Exponencial: math.exp(x)')
+    print('  - Exponencial de e: math.exp(x)')
     print('  - Seno: math.sin(x)')
     print('  - Coseno: math.cos(x)')
     print('  - Pi: math.pi')
@@ -16,6 +16,10 @@ def main():
 
     datos = Datos()
     datitos = datos.obtener_datos()
+    metodo = Metodo(datitos)
+    metodo.print_tabla()
+    metodo.run()
+
     
 
 if __name__ == "__main__":
