@@ -16,38 +16,38 @@ class Metodo():
         self.y = datos[1]
         self.h = datos[2]
         self.f = datos[3]
-        self.k1 = None
-        self.k2 = None
-        self.k3 = None
-        self.k4 = None
+        self.k1 = 0
+        self.k2 = 0
+        self.k3 = 0
+        self.k4 = 0
         self.y_sig = None
         self.end = datos[-1]
         self.results = None
 
     def calculate_k1(self):
-        self.k1 = round(self.eval_funcion(self.x , self.y), 5)
+        self.k1 = self.eval_funcion(self.x , self.y)
 
     def calculate_k2(self):
         x = self.x + self.h/2
-        y = self.y + (self.h/2)*self.k1
-        self.k2 = round(self.eval_funcion(x , y), 5)
+        y = self.y + ((self.h/2)*self.k1)
+        self.k2 = self.eval_funcion(x , y)
 
     def calculate_k3(self):
         x = self.x + self.h/2
-        y = self.y + (self.h/2)*self.k2
-        self.k3 = round(self.eval_funcion(x , y), 5)
+        y = self.y + ((self.h/2)*self.k2)
+        self.k3 = self.eval_funcion(x , y)
     
     def calculate_k4(self):
-        x = self.x + self.h/2
-        y = self.y + (self.h/2)*self.k3
-        self.k4 = round(self.eval_funcion(x , y), 5)
+        x = self.x + self.h
+        y = self.y + (self.h*self.k3)
+        self.k4 = self.eval_funcion(x , y)
     
     def calculate_y_sig(self):
-        self.y_sig = round((self.y + 1/6*(self.k1 + 2*self.k2 + 2*self.k3 + self.k4)*self.h), 5)
+        self.y_sig = (self.y + 1/6*(self.k1 + 2*self.k2 + 2*self.k3 + self.k4)*self.h)
 
     def eval_funcion(self, x , y):
         local_dict = {'x': x, 'y': y, 'math': math}
-        return round(eval(self.f, {}, local_dict), 5)
+        return eval(self.f, {}, local_dict)
 
     def reiniciar(self):
         self.y = self.y_sig 
